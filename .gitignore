@@ -1,5 +1,6 @@
 .DS_Store
 */.DS_Store
+.history/*
 kg_django/kg_building/code/bean/__pycache__/*
 kg_django/kg_building/code/core/__pycache__/*
 kg_django/kg_building/code/tool/__pycache__/*

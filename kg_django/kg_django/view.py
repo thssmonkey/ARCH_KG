@@ -296,13 +296,14 @@ def find_path(request):
             if nodes[i]['name'] not in nodes_total:
                 nodes_total.append(nodes[i]['name'])
             if i < len(nodes) - 1:
-                values = test_graph.run("Match (n:Entity{name: $fp})-[r:REL]->(end:Entity{name: $tp}) return r.value",
+                values = test_graph.run("Match (n:Entity{name: $fp})-[r:REL]->(end:Entity{name: $tp}) return r.value, r.rel",
                                         fp=nodes[i]['name'], tp=nodes[i + 1]['name']).data()
                 rel_val = values[0]['r.value']
+                rel_rel = values[0]['r.rel']
                 rels_total.append(
-                    {"start_node": nodes[i]['name'], "end_node": nodes[i + 1]['name'], "val": rel_val})
+                    {"start_node": nodes[i]['name'], "end_node": nodes[i + 1]['name'], "val": rel_val, "rel": rel_rel})
                 this_path.append(
-                    {"start_node": nodes[i]['name'], "end_node": nodes[i + 1]['name'], "val": rel_val})
+                    {"start_node": nodes[i]['name'], "end_node": nodes[i + 1]['name'], "val": rel_val, "rel": rel_rel})
                 this_path_val += rel_val
                 this_path_values.append(rel_val)
         paths.append({'path': this_path, 'val': int(np.sum(this_path_values))})

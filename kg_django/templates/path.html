@@ -146,8 +146,8 @@
         var tinyedges = [];
         var tinynetwork = null;
         $(window).resize(function() {
-            network.fit();
-            tinynetwork.fit();
+            //network.fit();
+            //tinynetwork.fit();
         });
         $(document).bind('keypress',function(e){
             if(e.keyCode==13){
@@ -246,9 +246,9 @@
                                 }
                             }
                             if(!exist)
-                                edges.push({id:t_paths[i]['path'][j]['start_node']+"&"+t_paths[i]['path'][j]['end_node'],from:t_paths[i]['path'][j]['start_node'],to:t_paths[i]['path'][j]['end_node'],value:t_paths[i]['path'][j]['val'],title:t_paths[i]['path'][j]['val'],pid:i});
+                                edges.push({id:t_paths[i]['path'][j]['start_node']+"&"+t_paths[i]['path'][j]['end_node'],label:t_paths[i]['path'][j]['rel'],from:t_paths[i]['path'][j]['start_node'],to:t_paths[i]['path'][j]['end_node'],value:t_paths[i]['path'][j]['val'],title:t_paths[i]['path'][j]['val'],pid:i});
 
-                            path += t_paths[i]['path'][j]['start_node'] + '--' + t_paths[i]['path'][j]['val'] + '--'
+                            path += t_paths[i]['path'][j]['start_node'] + '--' + "<a style='color: #ff9966;'>" + t_paths[i]['path'][j]['rel'] + "</a>" + '--'
                         }
                         path += tname
                         str += "<tr pid="+i+"><td>"+path+"</td><td>"+i+"</td></tr>"
@@ -359,7 +359,7 @@
                             console.log("an edge!");
                             tinynodes.push({id:tinypath[i]['end_node'],label:tinypath[i]['end_node'],x:xx});
                             xx += 1000
-                            tinyedges.push({id:tinypath[i]['start_node']+"&"+tinypath[i]['end_node'],from:tinypath[i]['start_node'],to:tinypath[i]['end_node'],value:tinypath[i]['val'],title:tinypath[i]['val'],pid:i});
+                            tinyedges.push({id:tinypath[i]['start_node']+"&"+tinypath[i]['end_node'],label:tinypath[i]['rel'],from:tinypath[i]['start_node'],to:tinypath[i]['end_node'],value:tinypath[i]['val'],title:tinypath[i]['val'],pid:i});
                         }
                         drawtiny();
                         $("html,body").animate({scrollTop:$("#path-network").offset().top},1000);
@@ -402,7 +402,7 @@
             };
             var options = {
                 nodes: {
-                    shape: 'dot',
+                    // shape: 'dot',
                     scaling:{
                         label: {
                         min:8,
@@ -482,7 +482,7 @@
             };
             var options = {
                 nodes: {
-                    shape: 'dot',
+                    // shape: 'dot',
                     scaling:{
                         label: {
                         min:8,
