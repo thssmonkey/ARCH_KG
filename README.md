@@ -3,7 +3,14 @@
 ```python
 python 3.7.7
 neo4j 4.2.1
+jieba 0.42.1
 pyltp 0.4.0
+（使用下载源码进行安装）
+ $ git clone git@github.com:HIT-SCIR/pyltp.git
+ $ cd pyltp
+ $ git submodule init
+ $ git submodule update
+ $ python setup.py install
 py2neo 2020.1.1
 ```
 
@@ -21,7 +28,7 @@ py2neo 2020.1.1
 
 4. 【kg_django/kg_building】运行filter_repeat.py去除`lexicon.json`中的重复内容，生成`lexicon.json`
 
-5. 【kg_django/kg_building】运行`renew_spec.py`。基于`规范原文.json`和`knowledge_triple.json`，一个句子可能对应多个三元组，重新梳理，使每个句子的三元组的实体词汇都对应到相应句子中（用于网站标红），生成`spec.json`
+5. 【kg_django/kg_building】运行`renew_spec.py`。基于`规范原文.json`和`lexicon.json`，一个句子可能对应多个三元组，重新梳理，使每个句子的三元组的实体词汇都对应到相应句子中（用于网站标红），生成`spec.json`
 
    （上诉文件均在kg_django/kg_building/data中，运行下方kg_django时把`lexicon.json`和`spec.json`复制到外层的kg_django/data中去）
 
