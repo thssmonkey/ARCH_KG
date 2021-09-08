@@ -2,6 +2,7 @@ import os
 import re
 import json
 import sys
+os.chdir(os.path.dirname(__file__))
 sys.path.append("..")
 from tool.append_to_json import AppendToJson
 
@@ -77,7 +78,8 @@ def abnormal_detection(origin_sentence):
 		return True
 	return False
 
-if __name__ == '__main__':
+def main_run():
+	os.chdir(os.path.dirname(__file__))
 	input_path = '../../data/final_text.txt'
 	output_path = '../../data/规范原文.json'
 
@@ -85,7 +87,7 @@ if __name__ == '__main__':
 		os.remove(output_path)
 	# os.mkdir(output_path)
 
-	print('Start filtering...')
+	print('Start buildSpec...')
 
 	recordItem = [] # 前缀条目记录
 	prevItem = ""   # 上一条前缀条目记录
@@ -161,3 +163,7 @@ if __name__ == '__main__':
 			'''
 	for spec in specList:
 		AppendToJson().append(output_path, spec)
+	print("buildSpec Ending...")
+
+if __name__ == '__main__':
+	main_run()

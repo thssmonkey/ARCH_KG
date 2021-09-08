@@ -2,6 +2,7 @@ import os
 import re
 import json
 import sys
+os.chdir(os.path.dirname(__file__))
 sys.path.append("..")
 from tool.append_to_json import AppendToJson
 

@@ -164,7 +164,7 @@ class ExtractByDSNF:
         relation_str = self.element_connect(relation)
         triple['关系'] = [entity1_str, relation_str, entity2_str]
         AppendToJson().append(self.file_path, triple)
-        print('triple: ' + entity1_str + '\t' + relation_str + '\t' + entity2_str)
+        # print('triple: ' + entity1_str + '\t' + relation_str + '\t' + entity2_str)
         return True
 
     def element_connect(self, element):

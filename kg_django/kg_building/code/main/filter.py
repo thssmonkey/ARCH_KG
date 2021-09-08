@@ -2,10 +2,12 @@ import os
 import re
 import json
 import sys
+os.chdir(os.path.dirname(__file__))
 sys.path.append("..")
 from tool.append_to_json import AppendToJson
 
-if __name__ == '__main__':
+def main_run():
+	os.chdir(os.path.dirname(__file__))
 	lexicon_name = "lexicon"
 	input_path = '../../data/knowledge_triple.json'
 	output_path = '../../data/' + lexicon_name + ".json"
@@ -41,6 +43,11 @@ if __name__ == '__main__':
 			triple_list.append(triple)
 		if name1 in lexicon_list and name2 in lexicon_list:
 			AppendToJson().append(output_path, line)
-			print(triple)
+			# print(triple)
 		else:
-			print("[不匹配] - " + triple)
+			# print("[不匹配] - " + triple)
+			pass
+	print("filter Ending...")
+
+if __name__ == '__main__':
+	main_run()

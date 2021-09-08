@@ -1,6 +1,7 @@
 import os
 import json
 from py2neo import Graph, Node, Relationship
+os.chdir(os.path.dirname(__file__))
 
 def build_neo4j_graph():
     # create an unique index
@@ -18,6 +19,8 @@ def build_neo4j_graph():
 def export_json_2_neo4j(path, neo4j_graph):
     triple_dic = {}
     node_dic = {}
+
+    print("Start export...")
 
     lines = open(path, 'r', encoding='utf-8').readlines()
     print(len(lines))
@@ -58,7 +61,7 @@ def export_json_2_neo4j(path, neo4j_graph):
             triple_dic[triple] = []
             triple_dic[triple].append(node_1_call_node_2)
 
-            print(triple)
+            # print(triple)
         else:
             node_1_call_node_2 = triple_dic[triple][0]
             node_1_call_node_2['value'] += 1
@@ -67,11 +70,14 @@ def export_json_2_neo4j(path, neo4j_graph):
             node_1_call_node_2['item'] += "###" + item
             node_1_call_node_2['spec'] += "###" + spec
             neo4j_graph.push(node_1_call_node_2)
-            print("[重复] - " + triple)
+            # print("[重复] - " + triple)
+    print("export Ending...")
 
-
-if __name__ == "__main__":
-    json_path = '../data/lexicon.json'#'../data/knowledge_triple.json'
+def main_run():
+    os.chdir(os.path.dirname(__file__))
+    json_path = '../kg_building/data/lexicon.json'
     neo4j_graph = build_neo4j_graph()
     export_json_2_neo4j(json_path, neo4j_graph)
-    print("完成")
+
+if __name__ == "__main__":
+    main_run()

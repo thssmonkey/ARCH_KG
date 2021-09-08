@@ -1,58 +1,34 @@
 # -*- coding: utf-8 -*-
 
 # from django.http import HttpResponse
-from django.shortcuts import render
-
-from django.http import HttpResponse
-
-from py2neo import Graph, Node, Relationship, database
-
-from django.core import serializers
-
 import os
-
 import json
-
+import time
 import numpy as np
-
 import requests
-
+from django.shortcuts import render, render_to_response
+from django.http import HttpResponse, JsonResponse, response
+from py2neo import Graph, Node, Relationship, database
+from django.core import serializers
 from functools import cmp_to_key
+from django.views.decorators import csrf
+from kg_building.code.main import buildSpecFromRawText, extract_main, filter, filter_repeat, renew_spec
+from neo4jGraph import write2neo4j
 
 test_graph = Graph(
     "http://127.0.0.1:7474", # 7687
     username="neo4j",
     password="1111"
 )
-'''
-test_graph = Graph(
-    "bolt://127.0.0.1:7687",
-    username="neo4j",
-    password="1111"
-)
-'''
 
 def f2(a, b):
     return b['val'] - a['val']
 
-
 def f3(a, b):
     return b['val'] - a['val']
 
-
-def hello(request):
-    context = {}
-    context['hello'] = 'Hello World!'
-    return render(request, 'hello.html', context)
-
-
 def near(request):
     return render(request, 'near.html')
-
-
-def near_test(request):
-    return render(request, 'near0.html')
-
 
 def find_near_before(request):
     a = request.GET['pname']
@@ -107,10 +83,10 @@ def find_near_before(request):
 
 def get_node_relation(name):
     data = test_graph.run("Match (n:Entity{name: $str})-[r:REL]->(end:Entity) return r.value, r.rel, r.item, r.spec, r.content, "
-                           "n.name,end.name order by r.value desc", str=name).data()
-    
+                            "n.name,end.name order by r.value desc", str=name).data()
+
     reverse_data = test_graph.run("Match (n:Entity)-[r:REL]->(end:Entity{name: $str}) return r.value, r.rel, r.item, r.spec, r.content, "
-                           "n.name,end.name order by r.value desc", str=name).data()
+                            "n.name,end.name order by r.value desc", str=name).data()
     res_list = {}
     for i in range(0, len(data)):
         data[i]['dir'] = "1"
@@ -326,7 +302,7 @@ def is_friends(request):
     fperson = request.GET['fname']
     tperson = request.GET['tname']
     data = test_graph.run("Match (n:Entity{name: $str1})-[r:REL]-(end:Entity{name:$str2}) return r.value ",
-                           str1=fperson, str2=tperson).data()
+                            str1=fperson, str2=tperson).data()
     rdata = {}
     if (len(data) > 0):
         rdata['status'] = 1
@@ -344,7 +320,7 @@ def getEdgeinfo(request):
     name1 = request.GET['sname']
     name2 = request.GET['tname']
 
-    url = "http://websensor.playbigdata.com/fss3/service.svc/GetSearchResults"
+    url = ""
 
     querystring = {"query": name1 + " " + name2, "num": "5", "start": "1"}
 
@@ -421,7 +397,8 @@ def get_graph(request):
     return response
 
 def get_spec(request):
-    path = "data/spec.json"
+    os.chdir(os.path.dirname(__file__))
+    path = "../kg_building/data/spec.json"
     lines = open(path, 'r', encoding='utf-8').readlines()
     print(len(lines))
     data = []
@@ -440,10 +417,13 @@ def search_spec(request):
     return render(request, 'search_spec.html')
 
 def search_from_spec(request):
-    word_name = request.GET['pname']
+    word_name = ""
+    if request.GET:
+        word_name = request.GET['pname']
     print(word_name)
 
-    path = "data/spec.json"
+    os.chdir(os.path.dirname(__file__))
+    path = "../kg_building/data/spec.json"
     lines = open(path, 'r', encoding='utf-8').readlines()
     data = []
     for i, line in enumerate(lines):
@@ -459,3 +439,104 @@ def search_from_spec(request):
     response["Access-Control-Allow-Headers"] = "*"
     return response
 
+def add_post(request):
+    return render(request, 'add_post.html')
+
+def add_wordlist_2_lexicon(word_list):
+    os.chdir(os.path.dirname(__file__))
+    input_path = "../kg_building/resource/lexicon.txt"
+    print('Start add_word...')
+    lexicon_list = []
+    with open(input_path, 'r', encoding='utf-8') as in_f:
+        lexicon_lines = in_f.readlines()
+        for i, line in enumerate(lexicon_lines):
+            line = line.strip()
+            lexicon_list.append(line)
+    print(len(lexicon_list))
+    written = False
+    with open(input_path, 'a') as out_f:
+        for word in word_list:
+            word = word.strip()
+            if word != "" and word not in lexicon_list:
+                out_f.write("\n" + word)
+                lexicon_list.append(word)
+                written = True
+    print(len(lexicon_list))
+    print('add_word Ending...')
+    return written
+
+# global variable
+progress_cnt = 0
+progress_status = ""
+total_cnt = 6
+total_start = None
+time_start = None
+total_time = 350
+
+def run_whole_process(word_list):
+    global progress_cnt, progress_status, total_start, time_start
+    print("Start whole_run...")
+    total_start = time.time()
+    time_start = total_start
+    progress_status = "添加词汇"
+    written = add_wordlist_2_lexicon(word_list)
+    progress_cnt += 1
+    print('[add_wordlist_2_lexicon] time cost: ', time.time() - time_start, ' s')
+    time_start = time.time()
+    if not written:
+        progress_cnt = total_cnt
+        progress_status = "完成"
+        print("not need run whole process")
+        return
+    
+    #buildSpecFromRawText.main_run()
+    #print('[buildSpecFromRawText] time cost: ', time.time() - time_start, ' s')
+    progress_status = "提取中"
+    extract_main.main_run()
+    progress_cnt += 1
+    print('[extract_main] time cost: ', time.time() - time_start, ' s')
+    time_start = time.time()
+    progress_status = "后处理"
+    filter.main_run()
+    progress_cnt += 1
+    print('[filter] time cost: ', time.time() - time_start, ' s')
+    time_start = time.time()
+    filter_repeat.main_run()
+    progress_cnt += 1
+    print('[filter_repeat] time cost: ', time.time() - time_start, ' s')
+    time_start = time.time()
+    renew_spec.main_run()
+    progress_cnt += 1
+    print('[renew_spec] time cost: ', time.time() - time_start, ' s')
+    time_start = time.time()
+    progress_status = "图谱生成"
+    write2neo4j.main_run()
+    progress_status = "完成"
+    progress_cnt += 1
+    print('[write2neo4j] time cost: ', time.time() - time_start, ' s')
+    print('[whole_run] time cost: ', time.time() - total_start, ' s')
+    print("whole_run Ending...")
+
+def add_post_ops(request):
+    word_list = ""
+    if request.GET:
+        word_list = request.GET['add_word'].split(",")
+    print(word_list)
+    # 重新运行整个流程
+    run_whole_process(word_list)
+
+    response = HttpResponse(json.dumps("ok"), content_type="application/json")
+    response["Access-Control-Allow-Origin"] = "*"
+    response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+    response["Access-Control-Max-Age"] = "1000"
+    response["Access-Control-Allow-Headers"] = "*"
+    return response
+
+def deal_process(request):
+    time_diff = time.time() - total_start
+    if progress_cnt == total_cnt:
+        time_diff = total_time
+    return JsonResponse({"prog_status": progress_status, "prog_time": time_diff * 100 / total_time, "prog_cnt": progress_cnt * 100 / total_cnt}, safe=False)
+
+if __name__ == '__main__':
+    run_whole_process()

@@ -2,11 +2,13 @@ import os
 import re
 import json
 import sys
+os.chdir(os.path.dirname(__file__))
 sys.path.append("..")
 from tool.append_to_json import AppendToJson
 
-if __name__ == '__main__':
-	kn_path = '../../data/knowledge_triple.json'
+def main_run():
+	os.chdir(os.path.dirname(__file__))
+	kn_path = '../../data/lexicon.json'
 	spec_path = '../../data/规范原文.json'
 	output_path = "../../data/spec.json"
 
@@ -14,7 +16,7 @@ if __name__ == '__main__':
 		os.remove(output_path)
 	# os.mkdir(output_path)
 
-	print('Start renewing...')
+	print('Start renew_spec...')
 
 	kn_lines = open(kn_path, 'r', encoding='utf-8').readlines()
 	print(len(kn_lines))
@@ -50,4 +52,7 @@ if __name__ == '__main__':
 			notempty_cnt += 1
 		AppendToJson().append(output_path, {"id": _id, "spec": _spec, "item": _item, "content": _content, "words": _word_list})
 	print(cnt, notempty_cnt)
-	print("End......")
+	print("renew_spec End......")
+
+if __name__ == '__main__':
+	main_run()

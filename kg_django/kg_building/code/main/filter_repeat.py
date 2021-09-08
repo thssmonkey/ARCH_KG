@@ -2,15 +2,17 @@ import os
 import re
 import json
 import sys
+os.chdir(os.path.dirname(__file__))
 sys.path.append("..")
 from tool.append_to_json import AppendToJson
 
-if __name__ == '__main__':
+def main_run():
+	os.chdir(os.path.dirname(__file__))
 	lexicon_name = "lexicon"
 	input_path = '../../data/' + lexicon_name + ".json"
 	output_path = '../../data/' + lexicon_name + ".json"
 
-	print('Start filtering repeat...')
+	print('Start filter_repeat...')
 	had_dict = {}
 	lines = open(input_path, 'r', encoding='utf-8').readlines()
 
@@ -32,7 +34,11 @@ if __name__ == '__main__':
 		if triple not in had_dict[content]:
 			had_dict[content].append(triple)
 			AppendToJson().append(output_path, line)
-			print(triple)
+			# print(triple)
 		else:
-			print("[重复] - " + triple)
-	print("Ending...")
+			# print("[重复] - " + triple)
+			pass
+	print("filter_repeat Ending...")
+
+if __name__ == '__main__':
+	main_run()

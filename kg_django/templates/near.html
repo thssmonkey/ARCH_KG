@@ -46,6 +46,7 @@
 				<li><a href="search_spec.html">关键词匹配</a> </li>
 				<li class="active"><a href="near.html">节点查询</a> </li>
                 <li><a href="path.html">关系查询</a></li>
+                <li><a href="add_post.html">词典添加</a></li>
 			</ul>
 		</div>
 	</div>
@@ -105,7 +106,7 @@
     <input type="hidden" id="hid" value="20"></input>
     <script type="text/javascript">
 
-        var BASE_URL = "http://127.0.0.1:8000/"; // 183.174.228.21:1241
+        var BASE_URL = "http://127.0.0.1:8000/";
         var nodeset ;
         var nodes = [];
         var edges = [];
@@ -218,19 +219,42 @@
                             rel_1 = [...new Set(rel_tmp.slice(0, value_list[0]))].join(",")
                             rel_2 = [...new Set(rel_tmp.slice(-value_list[1]))].join(",")
                             rel_seg = [rel_1, rel_2]
-                            console.log(rel_seg)
                             dir_list = ret[i]["dir"].split("@@@")
                         }
                         else {
                             rel_tmp = ret[i]['r.rel'].split("###")
-                            rel_seg = [...new Set(rel_tmp.slice(0, value_list[0]))].join(",")
+                            rel_seg = [[...new Set(rel_tmp.slice(0, value_list[0]))].join(",")]
                         }
                         console.log(ret[i])
                         for (var j = 0; j < all_cnt; j++) {
                             if (dir_list[j] == "1")
-                                edge = {id:start_node+"&"+end_node,label:rel_seg[j],from:start_node,to:end_node,value:value_list[j],title:value_list[j],rel:ret[i]["r.rel"],content:ret[i]["r.content"],item:ret[i]["r.item"],spec:ret[i]["r.spec"],dir:dir_list[j]}
+                                edge = {
+                                    id:start_node+"&"+end_node,
+                                    label:rel_seg[j],
+                                    from:start_node,
+                                    to:end_node,
+                                    value:value_list[j],
+                                    title:value_list[j],
+                                    rel:ret[i]["r.rel"],
+                                    content:ret[i]["r.content"],
+                                    item:ret[i]["r.item"],
+                                    spec:ret[i]["r.spec"],
+                                    dir:dir_list[j]
+                                }
                             else if (dir_list[j] == "2")
-                                edge = {id:end_node+"&"+start_node,label:rel_seg[j],from:end_node,to:start_node,value:value_list[j],title:value_list[j],rel:ret[i]["r.rel"],content:ret[i]["r.content"],item:ret[i]["r.item"],spec:ret[i]["r.spec"],dir:dir_list[j]}
+                                edge = {
+                                    id:end_node+"&"+start_node,
+                                    label:rel_seg[j],
+                                    from:end_node,
+                                    to:start_node,
+                                    value:value_list[j],
+                                    title:value_list[j],
+                                    rel:ret[i]["r.rel"],
+                                    content:ret[i]["r.content"],
+                                    item:ret[i]["r.item"],
+                                    spec:ret[i]["r.spec"],
+                                    dir:dir_list[j]
+                                }
                             edges.push(edge)
                         }
                         if(start_node == name || end_node == name){
@@ -396,8 +420,8 @@
                     // shape: 'dot',
                     scaling:{
                         label: {
-                        min:8,
-                        max:20
+                            min:8,
+                            max:20
                         }
                     },
                     color:{
@@ -435,6 +459,16 @@
                     arrows: {
                         to: true,
                         //from: true
+                    },
+                    font: {
+                        size: 15,
+                    },
+                    scaling:{
+                        label: {
+                            enabled: false,
+                            min: 15,
+                            max: 30,
+                        }
                     }
                 }
             };
@@ -475,10 +509,20 @@
                         all_cnt = ret[i]["all"]
                         start_node = ret[i]['n.name']
                         end_node = ret[i]['end.name']
-                        dir_list = ret[i]["dir"].split("@@@")
-                        value_list = ret[i]['r.value']
+                        value_list = [ret[i]['r.value']]
+                        rel_seg = []
+                        dir_list = [ret[i]["dir"]]
                         if (all_cnt > 1) {
                             value_list = ret[i]["r.value"].split("@@@")
+                            rel_tmp = ret[i]['r.rel'].split("###")
+                            rel_1 = [...new Set(rel_tmp.slice(0, value_list[0]))].join(",")
+                            rel_2 = [...new Set(rel_tmp.slice(-value_list[1]))].join(",")
+                            rel_seg = [rel_1, rel_2]
+                            dir_list = ret[i]["dir"].split("@@@")
+                        }
+                        else {
+                            rel_tmp = ret[i]['r.rel'].split("###")
+                            rel_seg = [[...new Set(rel_tmp.slice(0, value_list[0]))].join(",")]
                         }
                         for (var j = 0; j < all_cnt; j++) {
                             if (dir_list[j] == "1") {
@@ -497,7 +541,19 @@
                                 }
                             }
                             if(!exist3){
-                                edges.push({id:edge_id,from:start_node,to:end_node,value:value_list[j],title:value_list[j],rel:ret[i]["r.rel"],content:ret[i]["r.content"],item:ret[i]["r.item"],spec:ret[i]["r.spec"],dir:dir_list[j]})
+                                edges.push({
+                                    id:edge_id,
+                                    label:rel_seg[j],
+                                    from:start_node,
+                                    to:end_node,
+                                    value:value_list[j],
+                                    title:value_list[j],
+                                    rel:ret[i]["r.rel"],
+                                    content:ret[i]["r.content"],
+                                    item:ret[i]["r.item"],
+                                    spec:ret[i]["r.spec"],
+                                    dir:dir_list[j]
+                                })
                             }
                         }
                     }

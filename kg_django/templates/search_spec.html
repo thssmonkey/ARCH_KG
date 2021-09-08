@@ -47,6 +47,7 @@
 				<li class="active"><a href="search_spec.html">关键词匹配</a> </li>
 				<li><a href="near.html">节点查询</a> </li>
                 <li><a href="path.html">关系查询</a></li>
+                <li><a href="add_post.html">词典添加</a></li>
 			</ul>
 		</div>
 	</div>
@@ -58,7 +59,7 @@
                     <form action="/search_from_spec" method="get">
                         <div class="row" style="margin-left:10px">
                             <div class="col-lg-3 col-sm-3">
-                                <input type="text" class="form-control" name="htitle" id="pname" name="p" placeholder="关键词">
+                                <input type="text" class="form-control" name="pname" id="pname" placeholder="关键词">
                                 <div class="errormessage"></div>
                             </div>
                             <input hidden />
@@ -154,9 +155,15 @@
                         var spec = ret[i]["spec"]
                         var item = ret[i]["item"]
                         var content = ret[i]["content"]
+                        var lexicon_list = ret[i]["words"]
                         lex = name
                         jump_url = BASE_URL + 'near.html?name=' + encodeURI(name)
-                        content = content.replace(lex, "<a style='color: #FF0000' href=" + jump_url + " target='_blank'>"+lex+"</a>")
+                        content = content.replace(lex, "<a style='color: #2cad0c' href=" + jump_url + " target='_blank'>"+lex+"</a>")
+                        for (var i in lexicon_list) {
+                            lex = lexicon_list[i]
+                            jump_url = BASE_URL + 'near.html?name=' + encodeURI(lex)
+                            content = content.replace(lex, "<a style='color: #FF0000' href=" + jump_url + " target='_blank'>"+lex+"</a>")
+                        }
                         str += "<tr class='mytr'><td class='tname' style='color: #2cad0c;'>"+spec+"</td>"+"<td>"
                         str += "<table class='table-bordered table-hover table-condensed table-responsive' style='white-space: nowrap; width:100%'>"
                         str += "<tr><td style='color: black;' width='50'>"+item+"</td><td>"+"<span>"+content+"</span>"+"</td></tr>"
@@ -168,7 +175,7 @@
                     $('#mytable').DataTable({
                         "scrollX": true,
                         "autoWidth": true,
-                        'sScrollY': 'calc(100vh - 332px)',
+                        'sScrollY': 'calc(100vh - 250px)',
                         "paging": true,
                         "iDisplayLength":20, //默认每页数量
                         "bPaginate": true, //翻页功能

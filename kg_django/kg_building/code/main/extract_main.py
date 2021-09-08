@@ -2,6 +2,7 @@ import os
 import json
 import re
 import sys
+os.chdir(os.path.dirname(__file__))
 sys.path.append("..")
 from core.nlp import NLP
 from core.extractor import Extractor
@@ -34,7 +35,8 @@ def extract_item(origin_sentence):
     sentence = origin_sentence[sub_len:]
     return item_level, prefixItem, sentence
 
-if __name__ == '__main__':
+def main_run():
+    os.chdir(os.path.dirname(__file__))
     input_path = '../../data/规范原文.json'          # 输入的文本文件
     output_path = '../../data/knowledge_triple.json'  # 输出的处理结果Json文件
 
@@ -42,7 +44,7 @@ if __name__ == '__main__':
         os.remove(output_path)
     # os.mkdir(output_path)
 
-    print('Start extracting...')
+    print('Start extract...')
 
     # NLP(分词，词性标注，命名实体识别，依存句法分析)
     nlp = NLP()
@@ -79,4 +81,7 @@ if __name__ == '__main__':
                 extractor = Extractor()
                 num = extractor.extract(origin_sentence, dealed_sentence, output_path, num, spec, item)
 
-    print("End......")
+    print("extract End...")
+
+if __name__ == '__main__':
+    main_run()

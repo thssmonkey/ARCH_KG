@@ -19,7 +19,6 @@ from . import view
 
 app_name = 'kg_django'
 urlpatterns = [
-    url(r'^test$', view.near_test),
     url(r'^testnear', view.find_near_before),
     url(r'^is_friends', view.is_friends),
     url(r'^is_entity', view.is_entity),
@@ -30,9 +29,13 @@ urlpatterns = [
     url(r'^get_graph', view.get_graph),
     url(r'^get_spec', view.get_spec),
     url(r'^search_from_spec', view.search_from_spec),
+    url(r'^add_post_ops', view.add_post_ops),
+    url(r'^deal_process', view.deal_process),
+    
     url(r'^$', view.graph),
     url(r'^near', view.near),
     url(r'^path', view.path),
     url(r'^graph', view.graph),
     url(r'^search_spec', view.search_spec),
+    url(r'^add_post', view.add_post),
 ]

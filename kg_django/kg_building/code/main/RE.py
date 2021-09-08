@@ -2,6 +2,7 @@ import os
 import re
 
 import sys
+os.chdir(os.path.dirname(__file__))
 sys.path.append("..")
 from core.nlp import NLP
 from core.extractor import Extractor
