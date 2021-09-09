@@ -112,10 +112,10 @@
         var edges = [];
         var network = null;
         var maxn = 20;
-
+        /*
         $(window).resize(function() {
             network.fit();
-        });
+        });*/
         $(document).bind('keypress',function(e){
             if(e.keyCode==13){
                 $("#btn-commit").trigger("click");
@@ -207,6 +207,7 @@
                     node_list.push(name)
                     for(var i in ret){
                         // if(ret[i]["n.name"] != ret[i]["end.name"] && ret[i]["end.name"] == name) continue;
+                        another_dir = " <-"
                         all_cnt = ret[i]["all"]
                         start_node = ret[i]['n.name']
                         end_node = ret[i]['end.name']
@@ -220,8 +221,15 @@
                             rel_2 = [...new Set(rel_tmp.slice(-value_list[1]))].join(",")
                             rel_seg = [rel_1, rel_2]
                             dir_list = ret[i]["dir"].split("@@@")
+                            another_dir = " <->"
                         }
                         else {
+                            if (dir_list[0] == "1") {
+                                another_dir = " <-"
+                            }
+                            else {
+                                another_dir = " ->"
+                            }
                             rel_tmp = ret[i]['r.rel'].split("###")
                             rel_seg = [[...new Set(rel_tmp.slice(0, value_list[0]))].join(",")]
                         }
@@ -263,10 +271,8 @@
                                 sss = ret[i]['r.content']
                                 console.log(sss)
                             }
-                            another_dir = " <-"
                             another_node = end_node
                             if (end_node == name) {
-                                another_dir = " ->"
                                 another_node = start_node
                             }
                             console.log(another_node+another_dir)
