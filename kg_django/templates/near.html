@@ -263,15 +263,18 @@
                                 sss = ret[i]['r.content']
                                 console.log(sss)
                             }
+                            another_dir = " <-"
                             another_node = end_node
                             if (end_node == name) {
+                                another_dir = " ->"
                                 another_node = start_node
                             }
+                            console.log(another_node+another_dir)
                             if(!node_list.includes(another_node)) {
                                 nodes.push({id:another_node, label:another_node});
                                 node_list.push(another_node);
                             }
-                            str += "<tr class='mytr'><td class='tname' style='color: #2cad0c;'>"+another_node+"</td>"+"<td>"
+                            str += "<tr class='mytr'><td class='tname' style='color: #2cad0c;'>"+another_node+another_dir+"</td>"+"<td>"
                             str += "<table class='table-bordered table-hover table-condensed table-responsive' style='white-space: nowrap; width:100%'>"
                             content_list = ret[i]["r.content"].split("###")
                             rel_list = ret[i]["r.rel"].split("###")
@@ -350,9 +353,9 @@
                         //console.log("draw");
 
                         //console.log(nodes);
-                        var nodeID = data['id'];
+                        var nodeID = data['id'].split(" ")[0];
                         var clickNode = nodeset.get(nodeID);
-                        //console.log(clickNode);
+                        // console.log(clickNode);
                         clickNode.color = {
                             border: '#2cad0c',
                             background: '#7bd655',
@@ -367,7 +370,7 @@
                     {//给tr或者td添加click事件
                         //console.log("mouseout!");
                         var data=table.row(this).data();//获取值的对象数据
-                        var nodeID = data['id'];
+                        var nodeID = data['id'].split(" ")[0];
                         var clickNode = nodeset.get(nodeID);
                         clickNode.color = {
                             border: '#2B7CE9',
@@ -384,7 +387,7 @@
                     {//给tr或者td添加click事件
                         //console.log("click!");
                         var data=table.row(this).data();//获取值的对象数据
-                        var nodeID = data['id'];
+                        var nodeID = data['id'].split(" ")[0];
                         console.log(nodeID);
                         location.href="near.html?name="+nodeID;
                         //$("#pnme").val(nodeID);
@@ -476,6 +479,7 @@
 
             network.on("doubleClick", function(params) {//双击事件
                 if (params.nodes.length != 0) {//确定为节点双击事件
+                    console.log(params.nodes[0])
                     var click_node_id = params.nodes[0];
                     maxn = $("#hid").val();
                     var mr = 0;

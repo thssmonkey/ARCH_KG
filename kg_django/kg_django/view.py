@@ -16,7 +16,8 @@ from kg_building.code.main import buildSpecFromRawText, extract_main, filter, fi
 from neo4jGraph import write2neo4j
 
 test_graph = Graph(
-    "http://127.0.0.1:7474", # 7687
+    # "http://166.111.80.235:7474/",
+    "http://127.0.0.1:7474",
     username="neo4j",
     password="1111"
 )
@@ -469,12 +470,13 @@ def add_wordlist_2_lexicon(word_list):
 progress_cnt = 0
 progress_status = ""
 total_cnt = 6
-total_start = None
-time_start = None
-total_time = 350
+total_start = 0
+total_time = 400
+deal_flag = False
+word_list = []
 
 def run_whole_process(word_list):
-    global progress_cnt, progress_status, total_start, time_start
+    global progress_cnt, progress_status, total_start
     print("Start whole_run...")
     total_start = time.time()
     time_start = total_start
@@ -517,15 +519,29 @@ def run_whole_process(word_list):
     print('[whole_run] time cost: ', time.time() - total_start, ' s')
     print("whole_run Ending...")
 
-def add_post_ops(request):
-    word_list = ""
+def run_whole_test(word_list):
+    global progress_cnt, progress_status, total_start
+    total_start = time.time()
+    time_start = total_start
+    progress_cnt = 1
+    progress_status = "开始"
+    print(progress_cnt, progress_status, total_start, time_start)
+    time.sleep(10)
+    progress_cnt = total_cnt
+    progress_status = "完成"
+    print("[test] run whole process")
+    print(progress_cnt, progress_status, total_start, time_start)
+
+def add_word_ops(request):
+    global deal_flag, word_list
+    word_list = []
     if request.GET:
         word_list = request.GET['add_word'].split(",")
     print(word_list)
-    # 重新运行整个流程
-    run_whole_process(word_list)
+    # 打开处理开关
+    deal_flag = True
 
-    response = HttpResponse(json.dumps("ok"), content_type="application/json")
+    response = HttpResponse(json.dumps([]), content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
     response["Access-Control-Max-Age"] = "1000"
@@ -533,10 +549,18 @@ def add_post_ops(request):
     return response
 
 def deal_process(request):
+    global deal_flag, word_list
+    # 重新运行整个流程
+    if deal_flag:
+        deal_flag = False
+        # run_whole_test(word_list)
+        run_whole_process(word_list)
+        word_list = []
     time_diff = time.time() - total_start
     if progress_cnt == total_cnt:
         time_diff = total_time
-    return JsonResponse({"prog_status": progress_status, "prog_time": time_diff * 100 / total_time, "prog_cnt": progress_cnt * 100 / total_cnt}, safe=False)
+    # return JsonResponse({"prog_status": progress_status, "prog_time": time_diff * 100 / total_time, "prog_cnt": progress_cnt * 100 / total_cnt}, safe=False)
+    return JsonResponse({"prog_status": progress_status, "total_time": total_time, "time_diff": time_diff, "prog_cnt": progress_cnt, "total_cnt": total_cnt}, safe=False)
 
 if __name__ == '__main__':
     run_whole_process()

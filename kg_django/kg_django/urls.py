@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^get_graph', view.get_graph),
     url(r'^get_spec', view.get_spec),
     url(r'^search_from_spec', view.search_from_spec),
-    url(r'^add_post_ops', view.add_post_ops),
+    url(r'^add_word_ops', view.add_word_ops),
     url(r'^deal_process', view.deal_process),
     
     url(r'^$', view.graph),
