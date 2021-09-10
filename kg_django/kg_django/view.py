@@ -16,8 +16,8 @@ from kg_building.code.main import buildSpecFromRawText, extract_main, filter, fi
 from neo4jGraph import write2neo4j
 
 test_graph = Graph(
-    # "http://166.111.80.235:7474/",
-    "http://127.0.0.1:7474",
+    # "http://166.111.80.235:7475/",
+    "http://127.0.0.1:7475",
     username="neo4j",
     password="1111"
 )

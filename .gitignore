@@ -7,6 +7,7 @@ kg_django/kg_building/code/tool/__pycache__/*
 kg_django/kg_django/__pycache__/*
 kg_django/kg_building/.history/*
 kg_django/.history/*
+neo4j/data/transactions/*
 规范/*
 other/*
 kg_django/kg_building/model/*

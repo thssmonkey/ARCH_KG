@@ -6,8 +6,8 @@ os.chdir(os.path.dirname(__file__))
 def build_neo4j_graph():
     # create an unique index
     neo4j_graph = Graph(
-        # "http://166.111.80.235:7474/"
-        "http://127.0.0.1:7474",
+        # "http://166.111.80.235:7475/"
+        "http://127.0.0.1:7475",
         username="neo4j",
         password="1111"
     )
