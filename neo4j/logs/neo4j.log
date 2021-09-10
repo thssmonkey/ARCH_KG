@@ -198,3 +198,5 @@ Caused by: java.lang.IllegalArgumentException: Configured socket address must be
 2021-09-10 06:25:46.788+0000 INFO  Bolt enabled on localhost:7688.
 2021-09-10 06:25:48.355+0000 INFO  Remote interface available at http://localhost:7475/
 2021-09-10 06:25:48.356+0000 INFO  Started.
+2021-09-10 06:55:24.417+0000 WARN  The client is unauthorized due to authentication failure.
+2021-09-10 06:55:24.440+0000 WARN  The client is unauthorized due to authentication failure.
